@@ -10,7 +10,6 @@ import { sortTasksByGroup } from 'instruments';
 
 //Components
 import Task from "components/Task";
-import Catcher from "components/Catcher";
 import Spinner from "components/Spinner";
 import Checkbox from "theme/assets/Checkbox";
 
@@ -153,7 +152,11 @@ export default class Scheduler extends Component {
             newTaskMessage,
         } = this.state;
 
-        const tasks = sortTasksByGroup(userTasks).map((task) => (
+        const tasksFiltered = tasksFilter ?
+            userTasks.filter(({ message }) => message.toLowerCase().includes(tasksFilter))
+            : userTasks;
+
+        const tasks = sortTasksByGroup(tasksFiltered).map((task) => (
             <Task
                 key = { task.id }
                 { ...task }
@@ -180,29 +183,28 @@ export default class Scheduler extends Component {
                             <input
                                 className = { Styles.createTask }
                                 maxLength = { 50 }
-                                placeholder = 'Описание моей новой задачи'
+                                placeholder = 'Описaние моей новой задачи'
                                 type = 'text'
                                 value = { newTaskMessage }
                                 onChange = { this._updateNewTaskMessage }
                             />
                             <button>Добавить задачу</button>
                         </form>
-                        <ul>
-                            <FlipMove
-                                className = 'flip-wrapper'
-                                duration = { 400 }
-                                enterAnimation = 'elevator'
-                                leaveAnimation = 'elevator'
-                                typeName = 'div'>
-                                {tasks}
-                            </FlipMove>
-                        </ul>
+                        <div className = { Styles.overlay }>
+                            <ul>
+                                <FlipMove duration = { 400 }>
+                                    {tasks}
+                                </FlipMove>
+                            </ul>
+                        </div>
                     </section>
                     <footer >
                         <Checkbox
                             checked = { false }
                             color1 = '#363636'
                             color2 = '#fff'
+                            height = { 25 }
+                            width = { 25 }
                             onClick = { this._completeAllTasksAsync }
                         />
                         <span className = 'completeAllTasks'>Все задачи выполнены</span>

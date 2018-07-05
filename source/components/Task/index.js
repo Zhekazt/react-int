@@ -17,18 +17,15 @@ export default class Task extends PureComponent {
     static propTypes = {
         _removeTaskAsync: func.isRequired,
         _updateTaskAsync: func.isRequired,
-        created:          string.isRequired,
         id:               string.isRequired,
         message:          string.isRequired,
+        created:          string,
         // completed:   bool,
         favorite:         bool,
         modified:         string,
     };
 
     static defaultProps = {
-        id:        '',
-        created:   '',
-        modified:  '',
         completed: false,
         favorite:  false,
         message:   'Выполнить важную задачу',
@@ -71,7 +68,7 @@ export default class Task extends PureComponent {
         const { isTaskEditing } = this.state;
 
         if (isTaskEditing) {
-            this._updateTask(this._getTaskShape({}));
+            this._updateTask();
 
             return null;
 
@@ -84,13 +81,14 @@ export default class Task extends PureComponent {
         const escapeKey = e.key === "Escape";
         const { newMessage } = this.state;
 
-        if (enterKey) {
-            if (!newMessage) {
-                return null;
-            }
+        if (!newMessage) {
+            return null;
+        }
 
+        if (enterKey) {
             this._updateTask(this._getTaskShape({ message: newMessage }));
-        } else
+        }
+
         if (escapeKey) {
             this._cancelUpdatingTaskMessage();
 
@@ -106,10 +104,8 @@ export default class Task extends PureComponent {
 
 
     _setTaskEditingState = (state) => {
-        const { message } = this.props;
-
-        if (!state) {
-            this.setState({ newMessage: message });
+        if (state) {
+            this.taskInput.current.focus();
         }
         this.setState({ isTaskEditing: state });
         this._taskInputFocus();
@@ -124,21 +120,32 @@ export default class Task extends PureComponent {
 
     _toggleTaskFavoriteState = () => {
         const task = this._getTaskShape({ favorite: !this.props.favorite });
+        const { _updateTaskAsync } = this.props;
 
-        this._updateTask(task);
+        _updateTaskAsync(task);
     };
 
     _toggleTaskCompletedState = () => {
         const task = this._getTaskShape({ completed: !this.props.completed });
+        const { _updateTaskAsync } = this.props;
 
-        this._updateTask(task);
+        _updateTaskAsync(task);
     };
 
-    _updateTask = (task) => {
+    _updateTask = () => {
+        const { _updateTaskAsync, message } = this.props;
+        const { newMessage } = this.state;
+
+        if (message !== newMessage) {
+            _updateTaskAsync(
+                this._getTaskShape({
+                    message: newMessage,
+                })
+            );
+        }
         this._setTaskEditingState(false);
 
-        this.props._updateTaskAsync(task);
-
+        return null;
     };
 
     render () {
