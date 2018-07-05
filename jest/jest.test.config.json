@@ -2,7 +2,7 @@
     "runner": "jest-runner",
     "displayName": "test:unit",
     "rootDir": "../",
-    "verbose": true,
+    "verbose": false,
     "notify": true,
     "bail": false,
     "collectCoverage": false,
