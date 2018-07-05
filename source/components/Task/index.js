@@ -174,9 +174,7 @@ export default class Task extends PureComponent {
                 <input
                     disabled = { !isTaskEditing }
                     maxLength = { 50 }
-                    ref = { (input) => {
-                        this.taskInput = input;
-                    } }
+                    ref = { this.taskInput }
                     type = 'text'
                     value = { newMessage }
                     onChange = { this._updateNewTaskMessage }
