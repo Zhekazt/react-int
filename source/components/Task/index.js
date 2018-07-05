@@ -71,7 +71,6 @@ export default class Task extends PureComponent {
             this._updateTask();
 
             return null;
-
         }
         this._setTaskEditingState(!isTaskEditing);
     };
@@ -105,10 +104,11 @@ export default class Task extends PureComponent {
 
     _setTaskEditingState = (state) => {
         if (state) {
+            this._taskInputFocus();
             this.taskInput.current.focus();
         }
         this.setState({ isTaskEditing: state });
-        this._taskInputFocus();
+
     };
 
     _updateNewTaskMessage = (e) => {
@@ -190,14 +190,15 @@ export default class Task extends PureComponent {
                     color2 = '#000'
                     onClick = { this._toggleTaskFavoriteState }
                 />
+                {completed ? null :
                 <Edit
-                    inlineBlock
-                    checked = { false }
-                    className = { Styles.updateTaskMessageOnClick }
-                    color1 = '#3B8EF3'
-                    color2 = '#000'
-                    onClick = { this._updateTaskMessageOnClick }
-                />
+                        checked = { false }
+                        className = { Styles.updateTaskMessageOnClick }
+                        color1 = '#3B8EF3'
+                        color2 = '#000'
+                        inlineBlock
+                        onClick = { this._updateTaskMessageOnClick }
+                    />}
                 <Remove
                     inlineBlock
                     className = { Styles.removeTask }
